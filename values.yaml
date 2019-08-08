@@ -1,0 +1,69 @@
+gateways:
+  istio-ingressgateway:
+    enabled: true
+    autoscaleMin: 2
+    autoscaleMax: 3
+    podAntiAffinityLabelSelector:
+      - key: istio
+        operator: In
+        values: ingressgateway
+        topologyKey: failure-domain.beta.kubernetes.io/zone
+    type: NodePort
+    serviceAnnotations:
+      cloud.google.com/neg: '{"ingress": true}'
+      cloud.google.com/app-protocols: '{"https":"HTTP2"}'
+
+galley:
+  replicaCount: 2
+  podAntiAffinityLabelSelector:
+    - key: istio
+      operator: In
+      values: galley
+      topologyKey: failure-domain.beta.kubernetes.io/zone
+
+mixer:
+  policy:
+    autoscaleMin: 2
+    autoscaleMax: 3
+
+  telemetry:
+    autoscaleMax: 3
+  podAntiAffinityTermLabelSelector:
+    - key: istio
+      operator: In
+      values: mixer
+      topologyKey: failure-domain.beta.kubernetes.io/zone
+
+pilot:
+  autoscaleMin: 2
+  autoscaleMax: 3
+  podAntiAffinityLabelSelector:
+    - key: istio
+      operator: In
+      values: pilot
+      topologyKey: failure-domain.beta.kubernetes.io/zone
+
+tracing:
+  enabled: true
+  jaeger:
+    memory:
+      max_traces: 10000
+  service:
+    annotations:
+      cloud.google.com/neg: '{"ingress": true}'
+      beta.cloud.google.com/backend-config: '{"ports": {"http-query":"istio"}}'
+  ingress:
+    enabled: true
+    annotations:
+      ingress.gcp.kubernetes.io/pre-shared-cert: "multi-wildcard-visma-ai"
+      kubernetes.io/ingress.class: "gce"
+    hosts:
+      - jaeger.snbx.ssn.visma.ai
+      - jaeger.stag.ssn.visma.ai
+      - jaeger.prod.ssn.visma.ai
+
+kiali:
+  enabled: true
+  dashboard:
+    grafanaURL: https://dash.e-conomic.net/
+
