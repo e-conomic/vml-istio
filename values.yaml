@@ -37,19 +37,8 @@ tracing:
   jaeger:
     memory:
       max_traces: 10000
-  service:
-    annotations:
-      cloud.google.com/neg: '{"ingress": true}'
-      beta.cloud.google.com/backend-config: '{"ports": {"http-query":"istio"}}'
   ingress:
-    enabled: true
-    annotations:
-      ingress.gcp.kubernetes.io/pre-shared-cert: "multi-wildcard-visma-ai"
-      kubernetes.io/ingress.class: "gce"
-    hosts:
-      - jaeger.snbx.ssn.visma.ai
-      - jaeger.stag.ssn.visma.ai
-      - jaeger.prod.ssn.visma.ai
+    enabled: false
 
 kiali:
   enabled: true
