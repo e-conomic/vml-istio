@@ -1,17 +1,6 @@
 gateways:
   istio-ingressgateway:
-    enabled: true
-    autoscaleMin: 2
-    autoscaleMax: 3
-    podAntiAffinityLabelSelector:
-      - key: istio
-        operator: In
-        values: ingressgateway
-        topologyKey: failure-domain.beta.kubernetes.io/zone
-    type: NodePort
-    serviceAnnotations:
-      cloud.google.com/neg: '{"ingress": true}'
-      cloud.google.com/app-protocols: '{"https":"HTTP2"}'
+    enabled: false
 
 galley:
   replicaCount: 2
