@@ -45,3 +45,6 @@ kiali:
   dashboard:
     grafanaURL: https://dash.e-conomic.net/
 
+global:
+  proxy:
+    includeIPRanges: "10.0.0.0/8"
