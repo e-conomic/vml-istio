@@ -11,3 +11,14 @@ helm \
   > ~/code/vml/ssn-terraform/manifests/istio/istio-helm-generated.yaml
 ```
 
+For init file
+
+```
+helm template istio/install/kubernetes/helm/istio-init --name istio-init --namespace istio-system > ~/code/vml/ssn-terraform/manifests/istio/init.yaml
+```
+
+```
+bash upgrade-sidecar.sh ssn
+```
+
+NOTE: the script need `jq`

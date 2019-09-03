@@ -43,8 +43,11 @@ tracing:
 kiali:
   enabled: true
   dashboard:
+    auth:
+      strategy: anonymous
     grafanaURL: https://dash.e-conomic.net/
-
+  security:
+    enabled: false
 global:
   proxy:
     includeIPRanges: "10.0.0.0/8"
