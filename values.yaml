@@ -4,6 +4,7 @@ gateways:
 
 galley:
   replicaCount: 2
+  rollingMaxUnavailable: 1
   podAntiAffinityLabelSelector:
     - key: istio
       operator: In
@@ -17,6 +18,7 @@ mixer:
 
   telemetry:
     autoscaleMax: 3
+  rollingMaxUnavailable: 1
   podAntiAffinityTermLabelSelector:
     - key: istio
       operator: In
@@ -26,6 +28,7 @@ mixer:
 pilot:
   autoscaleMin: 2
   autoscaleMax: 3
+  rollingMaxUnavailable: 1
   podAntiAffinityLabelSelector:
     - key: istio
       operator: In
@@ -43,8 +46,11 @@ tracing:
 kiali:
   enabled: true
   dashboard:
+    auth:
+      strategy: anonymous
     grafanaURL: https://dash.e-conomic.net/
-
+  security:
+    enabled: false
 global:
   proxy:
     includeIPRanges: "10.0.0.0/8"
