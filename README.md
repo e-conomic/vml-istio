@@ -16,15 +16,22 @@ For init file
 ```
 helm template istio/install/kubernetes/helm/istio-init --name istio-init --namespace istio-system > ~/code/vml/ssn-terraform/manifests/istio/init.yaml
 ```
-
+```bash
+cd to terraform and
+kubectl apply -f manifests/istio/init.yaml
 ```
-bash upgrade-sidecar.sh ssn
+watch -n istio-system pods while doing this, if they are rolling wait for them to completely roll and give them some time to do dns
+```bash
+kubectl apply -f manifests/istio/istio-helm-generated.yaml
 ```
+watch -n istio-system pods while doing this, if they are rolling wait for them to completely roll and give them some time to do dns
 
-or
+when istio is done rolling do:
 
 ```
 kubectl rollout restart deployment --namespace ssn
 ```
+
+practice well on snbx and stage before doing this on production.
 
 NOTE: the script need `jq`
