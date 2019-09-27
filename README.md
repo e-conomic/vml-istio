@@ -21,4 +21,10 @@ helm template istio/install/kubernetes/helm/istio-init --name istio-init --names
 bash upgrade-sidecar.sh ssn
 ```
 
+or
+
+```
+kubectl rollout restart deployment --namespace ssn
+```
+
 NOTE: the script need `jq`
