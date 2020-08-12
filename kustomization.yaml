@@ -1,0 +1,11 @@
+resources:
+- istio-generated.yaml
+patches:
+- path: descriptor-mount.yaml
+  target:
+    kind: Deployment
+    name: istio-ingressgateway
+- path: descriptor-volume.yaml
+  target:
+    kind: Deployment
+    name: istio-ingressgateway
