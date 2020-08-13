@@ -5975,7 +5975,7 @@ metadata:
 ---
 apiVersion: v1
 data:
-  config.yaml: "istio_component_namespaces:\n  grafana: istio-system\n  tracing: istio-system\n  istiod: istio-system\n  prometheus: istio-system\nistio_namespace: istio-system\nauth:\n  strategy: anonymous\ndeployment:\n  accessible_namespaces: ['**']\nlogin_token:\n  signing_key: \"MloKZUKNm1\"\nserver:\n  port: 20001\n  web_root: /kiali\nexternal_services:\n  istio:\n    url_service_version: http://istiod.istio-system:15014/version\n  tracing:\n    url: \n    in_cluster_url: http://tracing/jaeger\n  grafana:\n    url: https://dash.e-conomic.net/\n    in_cluster_url: http://grafana:3000\n  prometheus:\n    url: http://prometheus.istio-system:9090\n"
+  config.yaml: "istio_component_namespaces:\n  grafana: istio-system\n  tracing: istio-system\n  istiod: istio-system\n  prometheus: istio-system\nistio_namespace: istio-system\nauth:\n  strategy: anonymous\ndeployment:\n  accessible_namespaces: ['**']\nlogin_token:\n  signing_key: \"CpJdDJX5E8\"\nserver:\n  port: 20001\n  web_root: /kiali\nexternal_services:\n  istio:\n    url_service_version: http://istiod.istio-system:15014/version\n  tracing:\n    url: \n    in_cluster_url: http://tracing/jaeger\n  grafana:\n    url: https://dash.e-conomic.net/\n    in_cluster_url: http://grafana:3000\n  prometheus:\n    url: http://prometheus.istio-system:9090\n"
 kind: ConfigMap
 metadata:
   labels:

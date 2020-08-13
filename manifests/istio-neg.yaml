@@ -19,7 +19,7 @@ spec:
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: "self-signed"
+      credentialName: "self-signed-tls"
     hosts:
     - "*"
 ---
