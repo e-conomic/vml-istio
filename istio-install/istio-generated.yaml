@@ -180,7 +180,7 @@ data:
     deployment:
       accessible_namespaces: ['**']
     login_token:
-      signing_key: "K6fHI4PZVQ"
+      signing_key: "pz2ukXwQKX"
     server:
       port: 20001
       web_root: /kiali
