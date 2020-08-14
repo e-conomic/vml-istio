@@ -180,7 +180,7 @@ data:
     deployment:
       accessible_namespaces: ['**']
     login_token:
-      signing_key: "CpJdDJX5E8"
+      signing_key: "K6fHI4PZVQ"
     server:
       port: 20001
       web_root: /kiali
@@ -801,7 +801,7 @@ spec:
           value: cluster.local
         - name: ISTIO_META_CLUSTER_ID
           value: Kubernetes
-        image: docker.io/istio/proxyv2:1.6.5
+        image: docker.io/istio/proxyv2:1.6.8
         imagePullPolicy: Always
         name: istio-proxy
         ports:
@@ -6480,7 +6480,7 @@ spec:
       serviceAccountName: istio-ingressgateway-service-account
       containers:
         - name: istio-proxy
-          image: "docker.io/istio/proxyv2:1.6.5"
+          image: "docker.io/istio/proxyv2:1.6.8"
           ports:
             - containerPort: 15020
             - containerPort: 80
@@ -6958,7 +6958,7 @@ spec:
           value: Kubernetes
         - name: CENTRAL_ISTIOD
           value: "false"
-        image: docker.io/istio/pilot:1.6.5
+        image: docker.io/istio/pilot:1.6.8
         name: discovery
         ports:
         - containerPort: 8080
@@ -7143,7 +7143,7 @@ data:
         "sts": {
           "servicePort": 0
         },
-        "tag": "1.6.5",
+        "tag": "1.6.8",
         "telemetryNamespace": "istio-system",
         "tracer": {
           "datadog": {
