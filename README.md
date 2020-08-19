@@ -1,6 +1,8 @@
 # VML Istio
 Istio config for Visma Machine Learning
 
+*Requires istioctl, kustomize and kubectl*
+
 To generate the istio config
 
 cd istio-install
