@@ -31,28 +31,6 @@ spec:
             envoy_grpc:
               cluster_name: "envoy-services-cluster"
 ---
-# Without this calls to the auth service will fail with a Downstream protocol error.
-# Related to https://github.com/istio/istio/issues/21841
-# And https://github.com/istio/istio/issues/26116
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  name: envoy-services-cluster-patch
-  namespace: istio-system
-spec:
-  workloadSelector:
-    labels:
-      istio: ingressgateway
-  configPatches:
-  - applyTo: CLUSTER
-    match:
-      cluster:
-        service: "envoy-services.ssn.svc.cluster.local"
-    patch:
-      operation: MERGE
-      value:
-        name: "envoy-services-cluster"
----
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:

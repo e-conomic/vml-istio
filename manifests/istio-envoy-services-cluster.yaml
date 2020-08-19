@@ -1,0 +1,28 @@
+# Without this calls to the auth service will fail with a Downstream protocol error.
+# Related to https://github.com/istio/istio/issues/21841
+# And https://github.com/istio/istio/issues/26116
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: envoy-services-cluster-add
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: CLUSTER
+    match:
+      context: "GATEWAY"
+    patch:
+      operation: ADD
+      value:
+        name: envoy-services-cluster
+        type: EDS
+        connect_timeout: 0.25s
+        lb_policy: ROUND_ROBIN
+        http2_protocol_options: {}
+        eds_cluster_config:
+            eds_config:
+                ads: {}
+            service_name: "outbound|50051||envoy-services.ssn.svc.cluster.local"
