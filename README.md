@@ -3,35 +3,24 @@ Istio config for Visma Machine Learning
 
 To generate the istio config
 
-```bash
-helm \
-  template istio/install/kubernetes/helm/istio \
-  --name istio --namespace istio-system \
-  -f values.yaml \
-  > ~/code/vml/ssn-terraform/manifests/istio/istio-helm-generated.yaml
-```
+cd istio-install
 
-For init file
+```bash
+istioctl manifest generate -f istio-operator.yaml > istio-generated.yaml
+kustomize build > ~/code/vml/ssn-terraform/manifests/istio/istio-generated-kustomized.yaml
+```
+When files have been moved to terraform repo let *Atlantis* plan and apply to environments.
 
-```
-helm template istio/install/kubernetes/helm/istio-init --name istio-init --namespace istio-system > ~/code/vml/ssn-terraform/manifests/istio/init.yaml
-```
-```bash
-cd to terraform and
-kubectl apply -f manifests/istio/init.yaml
-```
-watch -n istio-system pods while doing this, if they are rolling wait for them to completely roll and give them some time to do dns
-```bash
-kubectl apply -f manifests/istio/istio-helm-generated.yaml
-```
 watch -n istio-system pods while doing this, if they are rolling wait for them to completely roll and give them some time to do dns
 
-when istio is done rolling do:
+When istio is done rolling restart the pods of our services
+
+```
+kubectl rollout restart deployment --namespace ssn
+```
 
 ```
 kubectl rollout restart deployment --namespace ssn
 ```
 
 practice well on snbx and stage before doing this on production.
-
-NOTE: the script need `jq`
