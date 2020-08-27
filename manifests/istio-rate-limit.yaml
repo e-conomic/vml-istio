@@ -24,7 +24,7 @@ spec:
          name: envoy.rate_limit
          config:
            domain: vml
-           failure_mode_deny: true
+           failure_mode_deny: false
            rate_limited_as_resource_exhausted: true
            rate_limit_service:
              grpc_service:
