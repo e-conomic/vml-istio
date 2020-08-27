@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: json-transcode
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        listener:
+          portNumber: 443
+          filterChain:
+            filter:
+              name: "envoy.http_connection_manager"
+              subFilter:
+                name: "envoy.router"
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.grpc_json_transcoder
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
+            proto_descriptor: "/etc/envoy/descriptor.bin"
+            services:
+              - "ssn.annotator.v1.DocumentAnnotator"
+              - "ssn.access.v1.Access"
+              - "ssn.dataservice.v1.DataService"
+              - "ssn.dataservice.v1alpha1.DataService"
+              - "asgt.jester.v1.Jester"
+              - "asgt.dataservice.v1.DataService"
+            print_options:
+              always_print_primitive_fields: false
+              always_print_enums_as_ints: false
+              preserve_proto_field_names: false

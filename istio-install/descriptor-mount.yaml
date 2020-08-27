@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istio-ingressgateway
+spec:
+  template:
+    spec:
+      containers:
+      - name: istio-proxy
+        volumeMounts:
+        - mountPath: /etc/envoy
+          name: envoy-descriptor
+        - $patch: add

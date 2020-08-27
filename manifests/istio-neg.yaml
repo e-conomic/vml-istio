@@ -1,0 +1,58 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: ingress
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: "self-signed-tls"
+    hosts:
+    - "*"
+---
+# Redirect all traffic with user-agent GoogleHC to the /healthz/ready
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: istio-neg
+  namespace: istio-system
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - ingress
+  http:
+  - name: "googleHealthCheck-reroute"
+    match:
+    - headers:
+        user-agent:
+          prefix: GoogleHC
+    rewrite:
+      authority: istio-ingressgateway.istio-system.svc.cluster.local:15020
+      uri: /healthz/ready
+    route:
+    - destination:
+        host: istio-ingressgateway.istio-system.svc.cluster.local
+        port:
+          number: 15020
+---
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: edge-ingress
+  namespace: istio-system
+spec:
+  timeoutSec: 300

@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: grpc-web-filter
+  namespace: istio-system
+spec:
+  workloadSelector:
+      labels:
+          istio: ingressgateway
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        portNumber: 443
+        filterChain:
+          filter:
+            name: "envoy.http_connection_manager"
+            subFilter:
+              name: "envoy.cors"
+    patch:
+      operation: INSERT_AFTER
+      value:
+        name: envoy.filters.http.grpc_web
+        typed_config:
+          "@type": type.googleapis.com/envoy.config.filter.http.grpc_web.v2.GrpcWeb

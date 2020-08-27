@@ -1,0 +1,50 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: http-redirect
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: NETWORK_FILTER # http connection manager is a filter in Envoy
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.http_connection_manager"
+        portNumber: 443
+    patch:
+      operation: MERGE
+      value:
+        typed_config:
+          '@type': type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
+          use_remote_address: true
+          xff_num_trusted_hops: 2
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: envoy.http_connection_manager
+        portNumber: 443
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        config:
+          inlineCode: |
+            function envoy_on_request(request_handle)
+              -- Response directly with a redirect when X-Forwarded-Proto == "http"
+              local headers = request_handle:headers()
+              local xfp = headers:get('x-forwarded-proto')
+              if xfp == "http" then
+                local path = headers:get(':path')
+                local authority = headers:get(':authority')
+                local location = "https://" .. authority .. path
+                request_handle:respond({[":status"] = "308", ["Location"] = location}, "308 Permanent Redirect")
+              end
+            end
+        name: envoy.lua
