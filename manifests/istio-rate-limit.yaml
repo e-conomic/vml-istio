@@ -63,6 +63,9 @@ spec:
                 - request_headers:
                     header_name: ":authority"
                     descriptor_key: host
+                - request_headers:
+                    header_name: ":path"
+                    descriptor_key: endpoint
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
@@ -95,3 +98,6 @@ spec:
                 - request_headers:
                     header_name: ":authority"
                     descriptor_key: host
+                - request_headers:
+                    header_name: ":path"
+                    descriptor_key: endpoint
