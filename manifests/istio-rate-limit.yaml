@@ -98,3 +98,6 @@ spec:
                 - request_headers:
                     header_name: ":authority"
                     descriptor_key: host
+                - request_headers:
+                    header_name: ":path"
+                    descriptor_key: endpoint
