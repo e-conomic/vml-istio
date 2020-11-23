@@ -34,7 +34,9 @@ spec:
     patch:
       operation: INSERT_BEFORE
       value:
-        config:
+        name: envoy.filters.http.lua
+        typed_config:
+          '@type': type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
           inlineCode: |
             function envoy_on_request(request_handle)
               -- Response directly with a redirect when X-Forwarded-Proto == "http"
@@ -47,4 +49,3 @@ spec:
                 request_handle:respond({[":status"] = "308", ["Location"] = location}, "308 Permanent Redirect")
               end
             end
-        name: envoy.lua

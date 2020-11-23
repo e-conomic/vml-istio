@@ -42,7 +42,6 @@ echo manifests/stag-self-signed-tls.yaml
 
 
 gcloud container clusters get-credentials vml --zone europe-west1 --project prod-vml-vcdm
-mkdir -p out/prod
 CERT=$(cat tls.crt)$'\n'$USER_TRUST_CA_BUNDLE
 cat > self-signed-tls.yaml <<EOF
 apiVersion: v1
