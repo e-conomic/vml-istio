@@ -21,16 +21,17 @@ spec:
       patch:
         operation: INSERT_BEFORE
         value:
-         name: envoy.rate_limit
-         config:
-           domain: vml
-           failure_mode_deny: false
-           rate_limited_as_resource_exhausted: true
-           rate_limit_service:
-             grpc_service:
-               envoy_grpc:
-                 cluster_name: envoy-services-cluster
-               timeout: 0.25s
+         name: envoy.filters.http.ratelimit
+         typed_config:
+          '@type': type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
+          domain: vml
+          failure_mode_deny: false
+          rate_limited_as_resource_exhausted: true
+          rate_limit_service:
+            grpc_service:
+              envoy_grpc:
+                cluster_name: envoy-services-cluster
+              timeout: 0.25s
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
