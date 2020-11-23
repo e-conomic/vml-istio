@@ -1,6 +1,6 @@
 # Without this calls to the auth service will fail with a Downstream protocol error.
 # Related to https://github.com/istio/istio/issues/21841
-# And https://github.com/istio/istio/issues/26116
+# as of Oct 7th Istio is working for first class support for ext_authz https://github.com/istio/istio/issues/27790
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
