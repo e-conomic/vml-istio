@@ -33,6 +33,7 @@ spec:
                 cluster_name: envoy-services-cluster
               timeout: 0.25s
 ---
+# Smartscan rate limit actions
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -68,6 +69,7 @@ spec:
                     header_name: ":path"
                     descriptor_key: endpoint
 ---
+# Autosuggest rate limit actions
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
