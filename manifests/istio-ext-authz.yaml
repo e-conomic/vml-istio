@@ -17,9 +17,9 @@ spec:
           filter:
             name: "envoy.http_connection_manager"
             subFilter:
-              name: "envoy.router"
+              name: "envoy.filters.http.grpc_json_transcoder"
     patch:
-      operation: INSERT_BEFORE
+      operation: INSERT_AFTER
       value:
         name: envoy.filters.http.ext_authz
         typed_config:
