@@ -12,7 +12,7 @@ spec:
     match:
       context: GATEWAY
       listener:
-        portNumber: 443
+        portNumber: 8443
         filterChain:
           filter:
             name: "envoy.http_connection_manager"
@@ -34,22 +34,18 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: bypass-auth-filter
+  name: ext-authz-filter-cluster-patch
   namespace: istio-system
 spec:
   workloadSelector:
     labels:
-      istio: ingressgateway
+      app: istio-ingressgateway
   configPatches:
-  - applyTo: HTTP_ROUTE
+  - applyTo: CLUSTER
     match:
-      routeConfiguration:
-        vhost:
-          route:
-            name: googleHealthCheck-reroute
+      cluster:
+        service: "outbound|50051||envoy-services.ssn.svc.cluster.local"
     patch:
-        operation: MERGE
-        value:
-          per_filter_config:
-            envoy.ext_authz:
-              disabled: true
+      operation: MERGE
+      value:
+        name: "envoy-services-cluster"

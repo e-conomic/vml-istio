@@ -12,7 +12,7 @@ spec:
     match:
       context: GATEWAY
       listener:
-        portNumber: 443
+        portNumber: 8443
         filterChain:
           filter:
             name: "envoy.http_connection_manager"

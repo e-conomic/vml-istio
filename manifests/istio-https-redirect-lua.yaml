@@ -14,13 +14,13 @@ spec:
       listener:
         filterChain:
           filter:
-            name: "envoy.http_connection_manager"
-        portNumber: 443
+            name: "envoy.filters.network.http_connection_manager"
+        portNumber: 8443
     patch:
       operation: MERGE
       value:
         typed_config:
-          '@type': type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
+          '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
           use_remote_address: true
           xff_num_trusted_hops: 2
   - applyTo: HTTP_FILTER
@@ -29,8 +29,8 @@ spec:
       listener:
         filterChain:
           filter:
-            name: envoy.http_connection_manager
-        portNumber: 443
+            name: envoy.filters.network.http_connection_manager
+        portNumber: 8443
     patch:
       operation: INSERT_BEFORE
       value:
