@@ -3,9 +3,6 @@ kind: IstioOperator
 metadata:
   creationTimestamp: null
 spec:
-  addonComponents:
-    kiali:
-      enabled: true
   components:
     ingressGateways:
     - enabled: true
@@ -92,9 +89,4 @@ spec:
         operator: In
         topologyKey: failure-domain.beta.kubernetes.io/zone
         values: pilot
-    tracing:
-      enabled: true
-      jaeger:
-        memory:
-          max_traces: 10000
 
