@@ -30,26 +30,3 @@ spec:
           grpc_service:
             envoy_grpc:
               cluster_name: "envoy-services-cluster"
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  name: bypass-auth-filter
-  namespace: istio-system
-spec:
-  workloadSelector:
-    labels:
-      istio: ingressgateway
-  configPatches:
-  - applyTo: HTTP_ROUTE
-    match:
-      routeConfiguration:
-        vhost:
-          route:
-            name: googleHealthCheck-reroute
-    patch:
-        operation: MERGE
-        value:
-          per_filter_config:
-            envoy.ext_authz:
-              disabled: true
