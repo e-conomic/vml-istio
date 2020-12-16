@@ -1,0 +1,66 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kiali
+  namespace: istio-system
+spec:
+  gateways:
+  - istio-system/iap-ingress
+  hosts:
+  - 'kiali.snbx.vml.visma.ai'
+  - 'kiali.stag.vml.visma.ai'
+  - 'kiali.prod.vml.visma.ai'
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: kiali
+        port:
+          number: 20001
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: prometheus
+  namespace: istio-system
+spec:
+  gateways:
+  - istio-system/iap-ingress
+  hosts:
+  - 'prom.snbx.vml.visma.ai'
+  - 'prom.stag.vml.visma.ai'
+  - 'prom.prod.vml.visma.ai'
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: prometheus.monitoring.svc.cluster.local
+        port:
+          number: 9090
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: jaeger
+  namespace: istio-system
+spec:
+  gateways:
+  - istio-system/iap-ingress
+  hosts:
+  - 'jaeger.snbx.vml.visma.ai'
+  - 'jaeger.stag.vml.visma.ai'
+  - 'jaeger.prod.vml.visma.ai'
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: jaeger-query
+        port:
+          number: 16686
+

@@ -5,7 +5,8 @@ metadata:
 spec:
   components:
     ingressGateways:
-    - enabled: true
+    - name: istio-ingressgateway
+      enabled: true
       k8s:
         hpaSpec:
           maxReplicas: 6
@@ -14,7 +15,19 @@ spec:
           cloud.google.com/app-protocols: '{"https":"HTTP2","http":"HTTP"}'
           cloud.google.com/backend-config: '{"default": "edge-ingress"}'
           cloud.google.com/neg: '{"ingress": true}'
-      name: istio-ingressgateway
+    - name: iap-ingressgateway
+      enabled: true
+      label:
+        app: iap-ingressgateway
+        istio: iap-ingressgateway
+      k8s:
+        hpaSpec:
+          maxReplicas: 6
+          minReplicas: 3
+        serviceAnnotations:
+          cloud.google.com/app-protocols: '{"https":"HTTP2","http":"HTTP"}'
+          cloud.google.com/backend-config: '{"default": "istio-iap"}'
+          cloud.google.com/neg: '{"ingress": true}'
     pilot:
       k8s:
         hpaSpec:
@@ -37,36 +50,6 @@ spec:
           topologyKey: kubernetes.io/hostname
           values: istio-egressgateway
           weight: 50
-        ports:
-        - name: http-status-port
-          port: 15020
-          targetPort: 15020
-        - name: http2
-          nodePort: 31380
-          port: 80
-          targetPort: 80
-        - name: https
-          nodePort: 31390
-          port: 443
-          targetPort: 443
-        - name: tcp
-          nodePort: 31400
-          port: 31400
-        - name: https-kiali
-          port: 15029
-          targetPort: 15029
-        - name: https-prometheus
-          port: 15030
-          targetPort: 15030
-        - name: https-grafana
-          port: 15031
-          targetPort: 15031
-        - name: https-tracing
-          port: 15032
-          targetPort: 15032
-        - name: tls
-          port: 15443
-          targetPort: 15443
         sds:
           enabled: true
         type: NodePort

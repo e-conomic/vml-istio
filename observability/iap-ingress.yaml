@@ -1,0 +1,58 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: iap-ingress
+  namespace: istio-system
+spec:
+  selector:
+    istio: iap-ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: "self-signed-tls"
+    hosts:
+    - "*"
+---
+# Lua filter, reply 200 OK to any incoming calls with googleHC as agent header.
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: http-gcplb-health-checks-iap
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: iap-ingressgateway
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: envoy.http_connection_manager
+        portNumber: 8443
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.lua
+        typed_config:
+          "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
+          inlineCode: |
+            function envoy_on_request(request_handle)
+              local headers = request_handle:headers()
+              local agent = headers:get('user-agent')
+              if agent and string.sub(agent,1, 8) == "GoogleHC" then
+                request_handle:respond({[":status"] = "200"}, "ready")
+              end
+            end
