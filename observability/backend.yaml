@@ -1,0 +1,10 @@
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: istio-iap
+  namespace: istio-system
+spec:
+  iap:
+    enabled: true
+    oauthclientCredentials:
+      secretName: iap-client-credentials
