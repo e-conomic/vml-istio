@@ -39,19 +39,6 @@ spec:
   values:
     gateways:
       istio-ingressgateway:
-        podAntiAffinityTermLabelSelector:
-        - key: app
-          operator: In
-          topologyKey: failure-domain.beta.kubernetes.io/zone
-          values: istio-egressgateway
-          weight: 100
-        - key: app
-          operator: In
-          topologyKey: kubernetes.io/hostname
-          values: istio-egressgateway
-          weight: 50
-        sds:
-          enabled: true
         type: NodePort
     global:
       proxy:
@@ -59,17 +46,4 @@ spec:
     meshConfig:
       accessLogFile: "/dev/stdout"
       accessLogEncoding: "JSON"
-    kiali:
-      dashboard:
-        auth:
-          strategy: anonymous
-        grafanaURL: https://dash.e-conomic.net/
-      security:
-        enabled: false
-    pilot:
-      podAntiAffinityLabelSelector:
-      - key: istio
-        operator: In
-        topologyKey: failure-domain.beta.kubernetes.io/zone
-        values: pilot
 
