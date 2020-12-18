@@ -25,4 +25,5 @@ spec:
         eds_cluster_config:
             eds_config:
                 ads: {}
+                resource_api_version: "V3"
             service_name: "outbound|50051||envoy-services.ssn.svc.cluster.local"

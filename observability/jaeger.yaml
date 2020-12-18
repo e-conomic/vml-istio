@@ -1,0 +1,206 @@
+---
+# Based on https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/jaeger.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jaeger
+    jaeger-infra: agent-service
+    release: istio
+  name: jaeger-agent
+  namespace: istio-system
+spec:
+  clusterIP: None
+  ports:
+  - name: agent-zipkin-thrift
+    port: 5775
+    protocol: UDP
+    targetPort: 5775
+  - name: agent-compact
+    port: 6831
+    protocol: UDP
+    targetPort: 6831
+  - name: agent-binary
+    port: 6832
+    protocol: UDP
+    targetPort: 6832
+  selector:
+    app: jaeger
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jaeger
+    jaeger-infra: collector-service
+    release: istio
+  name: jaeger-collector
+  namespace: istio-system
+spec:
+  ports:
+  - name: jaeger-collector-tchannel
+    port: 14267
+    protocol: TCP
+    targetPort: 14267
+  - name: jaeger-collector-http
+    port: 14268
+    protocol: TCP
+    targetPort: 14268
+  - name: jaeger-collector-grpc
+    port: 14250
+    protocol: TCP
+    targetPort: 14250
+  selector:
+    app: jaeger
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jaeger
+    jaeger-infra: collector-service
+    release: istio
+  name: jaeger-collector-headless
+  namespace: istio-system
+spec:
+  clusterIP: None
+  ports:
+  - name: jaeger-collector-grpc
+    port: 14250
+    protocol: TCP
+    targetPort: 14250
+  selector:
+    app: jaeger
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: null
+  labels:
+    app: jaeger
+    jaeger-infra: jaeger-service
+    release: istio
+  name: jaeger-query
+  namespace: istio-system
+spec:
+  ports:
+  - name: query-http
+    port: 16686
+    protocol: TCP
+    targetPort: 16686
+  selector:
+    app: jaeger
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: null
+  labels:
+    app: jaeger
+    release: istio
+  name: tracing
+  namespace: istio-system
+spec:
+  ports:
+  - name: http-query
+    port: 80
+    protocol: TCP
+    targetPort: 16686
+  selector:
+    app: jaeger
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jaeger
+    release: istio
+  name: zipkin
+  namespace: istio-system
+spec:
+  ports:
+  - name: http-query
+    port: 9411
+    protocol: TCP
+    targetPort: 9411
+  selector:
+    app: jaeger
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: jaeger
+    release: istio
+  name: jaeger
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "14269"
+        prometheus.io/scrape: "true"
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: jaeger
+        release: istio
+    spec:
+      containers:
+      - env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: BADGER_EPHEMERAL
+          value: "false"
+        - name: SPAN_STORAGE_TYPE
+          value: badger
+        - name: BADGER_DIRECTORY_VALUE
+          value: /badger/data
+        - name: BADGER_DIRECTORY_KEY
+          value: /badger/key
+        - name: COLLECTOR_ZIPKIN_HTTP_PORT
+          value: "9411"
+        - name: MEMORY_MAX_TRACES
+          value: "10000"
+        - name: QUERY_BASE_PATH
+          value: /jaeger
+        image: docker.io/jaegertracing/all-in-one:1.20
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 14269
+        name: jaeger
+        ports:
+        - containerPort: 9411
+        - containerPort: 16686
+        - containerPort: 14250
+        - containerPort: 14267
+        - containerPort: 14268
+        - containerPort: 14269
+        - containerPort: 5775
+          protocol: UDP
+        - containerPort: 6831
+          protocol: UDP
+        - containerPort: 6832
+          protocol: UDP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 14269
+        resources:
+          requests:
+            cpu: 10m
+        volumeMounts:
+        - mountPath: /badger
+          name: data
+      volumes:
+      - emptyDir: {}
+        name: data
