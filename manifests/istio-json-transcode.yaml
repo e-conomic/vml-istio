@@ -28,7 +28,6 @@ spec:
               - "ssn.annotator.v1.DocumentAnnotator"
               - "ssn.access.v1.Access"
               - "ssn.dataservice.v1.DataService"
-              - "ssn.dataservice.v1alpha1.DataService"
               - "asgt.jester.v1.Jester"
               - "asgt.dataservice.v1.DataService"
             print_options:
